@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import csv
 from io import StringIO
-from pathlib import Path
 import re
 from urllib.parse import urlparse, parse_qs
 
@@ -10,8 +9,6 @@ import httpx
 
 from .models import Dataset, Mine
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-PUBLIC_ROOT = PROJECT_ROOT / "public"
 MAX_BYTES = 4_000_000
 
 

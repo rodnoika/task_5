@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 from io import BytesIO
+from pathlib import Path
 from xml.sax.saxutils import escape
 
 from reportlab.graphics.shapes import (
@@ -30,7 +31,6 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from .data import PUBLIC_ROOT
 from .models import AnalysisResponse, AnalyzedMine, Anomaly, ReportRequest
 
 INK = colors.HexColor("#171b22")
@@ -60,17 +60,18 @@ MARGIN = 44
 CONTENT = WIDTH - 2 * MARGIN
 FONT = "MiningNoto"
 BOLD = "MiningNotoBold"
+ASSET_ROOT = Path(__file__).resolve().parents[1] / "assets"
 
 
 def register_font():
     if FONT not in pdfmetrics.getRegisteredFontNames():
         pdfmetrics.registerFont(
-            TTFont(FONT, str(PUBLIC_ROOT / "fonts" / "NotoSans.ttf"))
+            TTFont(FONT, str(ASSET_ROOT / "fonts" / "NotoSans.ttf"))
         )
 
     if BOLD not in pdfmetrics.getRegisteredFontNames():
         pdfmetrics.registerFont(
-            TTFont(BOLD, str(PUBLIC_ROOT / "fonts" / "NotoSans-Bold.ttf"))
+            TTFont(BOLD, str(ASSET_ROOT / "fonts" / "NotoSans-Bold.ttf"))
         )
     pdfmetrics.registerFontFamily(
         FONT, normal=FONT, bold=BOLD, italic=FONT, boldItalic=BOLD
@@ -275,7 +276,7 @@ def build_report(result: AnalysisResponse, request: ReportRequest) -> bytes:
     data, series = result.dataset, result.series
     fleet = series[0]
     period = f"{data.dates[0]} - {data.dates[-1]}"
-    logo = ImageReader(str(PUBLIC_ROOT / "branding" / "weyland-yutani.png"))
+    logo = ImageReader(str(ASSET_ROOT / "branding" / "weyland-yutani.png"))
     logo_width, logo_height = logo.getSize()
 
     class ReportDocument(SimpleDocTemplate):
